@@ -1,6 +1,7 @@
 const checkoutModel = require('../models/checkout');
 const productModel = require('../models/product');
 const axios = require('axios')
+const dbConnection = require('../database/index')
 
 async function saveProducts(checkoutId, productsList) {
 
@@ -29,34 +30,40 @@ module.exports = {
             })
             .catch(error => error)
 
-            const newCheckout = req.body
-            newCheckout['totalUSD'] = (newCheckout.total * USD.buy).toFixed(2);
-            res.json(newCheckout)
+        const newCheckout = req.body
+        newCheckout['totalUSD'] = (newCheckout.total * USD.buy).toFixed(2);
 
-        // await checkoutModel.create(newCheckout).then(
-        //     async createdCheckout => {
+        let transaction
 
-        //         for (let product of newCheckout.products) {
-        //             product['checkoutId'] = createdCheckout.id;
+        try {
+            transaction = await dbConnection.transaction()
 
-        //             await productModel.create(product)
-        //                 .then(
-        //                     produto => {
-        //                         return res.status(200).json(createdCheckout + produto)
-        //                     }
-        //                 )
-        //                 .catch(error => {
-        //                     return res.status(400).json(error)
-        //                 })
+            await Promise.all([
+                await checkoutModel.create(newCheckout, transaction).then(
+                    async createdCheckout => {
+                        for (let product of newCheckout.products) {
+                            //product['checkoutId'] = createdCheckout.id;
 
-        //         };
-        //     }
-        // )
-        //     .catch(
-        //         error => {
-        //             return res.status(400).json(error)
-        //         }
-        //     )
+                            await productModel.create(product, transaction);
+                        };
+                    }
+                )
+            ])
 
-    },
+            await transaction.commit();
+            return res.json({
+                message: 'checkout saved sucessfully'
+            })
+
+        } catch (error) {
+            if (transaction) {
+                await transaction.rollback();
+            }
+            return res.json({
+                error: error
+            })
+        }
+
+
+    }
 }
