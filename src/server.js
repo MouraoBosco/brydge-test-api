@@ -1,11 +1,14 @@
 const express = require('express');
 const routes = require('./routes');
-
-const app = express();
+const cors = require('cors')
 require('./database/index')
+
 
 const port = '3333';
 
+const app = express();
+
+app.use(cors());
 app.use(express.json());
 app.use(routes)
 
