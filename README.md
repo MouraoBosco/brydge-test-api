@@ -23,7 +23,7 @@
                 },
             ]
 }`
-## 3.1 A real exemple of the expected object at the `POST - /checkout` endpoint
+## 3.1 A real exemple of the expected JSON at the `POST - /checkout` endpoint
 * ` {       "clientName": "João Bobo das Neves",
             "clientEmail": "joaobobo@hotmail.com",
             "clientAdress": "Rua dos bobos, número 0",
