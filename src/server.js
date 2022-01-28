@@ -14,6 +14,6 @@ app.use(routes)
 
 app.listen(port);
 
-console.log(`server up on port ${port}`)
+console.log(`server up on http://localhost:${port}`)
 
 module.exports = app
