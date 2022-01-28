@@ -40,4 +40,4 @@
                 }
             ]
 }`
-* please note that the key `products` do accepts more than one object.
+* please note that the key `products` do accepts more than one object and that all of the checkout's and products's objects are a MUST fill.
