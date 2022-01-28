@@ -1,4 +1,4 @@
-#### Note: please make sure that you have node.js installed on your machine. 
+# Note: please make sure that you have node.js installed on your machine. 
 
 
 # 1. Setup
