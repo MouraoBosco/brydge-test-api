@@ -15,7 +15,12 @@ class checkout extends Model {
     }
 
     static associate(models) {
-        this.hasMany(models.product, { foreignKey: 'checkoutId', as: 'products' });
+        this.hasMany(models.product, {
+            foreignKey: 'checkoutId',
+            as: 'products',
+            onDelete: 'cascade',
+            onUpdate: 'cascade'
+        });
     }
 }
 

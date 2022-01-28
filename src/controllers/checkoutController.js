@@ -31,7 +31,7 @@ module.exports = {
             .catch(error => error)
 
         const newCheckout = req.body
-        newCheckout['totalUSD'] = (newCheckout.total * USD.buy).toFixed(2);
+        newCheckout['totalUSD'] = (newCheckout.totalBRL * USD.buy).toFixed(2);
 
         let transaction
 
@@ -39,15 +39,12 @@ module.exports = {
             transaction = await dbConnection.transaction()
 
             await Promise.all([
-                await checkoutModel.create(newCheckout, transaction).then(
-                    async createdCheckout => {
-                        for (let product of newCheckout.products) {
-                            //product['checkoutId'] = createdCheckout.id;
-
-                            await productModel.create(product, transaction);
-                        };
-                    }
-                )
+                await checkoutModel.create(newCheckout, {
+                    include: [{
+                        model: productModel,
+                        as: 'products'
+                    }]
+                }, transaction)
             ])
 
             await transaction.commit();
@@ -65,5 +62,14 @@ module.exports = {
         }
 
 
+    },
+    async getAll(req, res) {
+
+        await checkoutModel.findAll(
+            {
+                include: [{model: productModel, as: 'products'}]
+            }
+        ).then(allCheckouts => res.json(allCheckouts))
+            .catch(error => res.json({ error: error }))
     }
 }
