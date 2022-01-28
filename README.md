@@ -1,6 +1,5 @@
 # Note: please make sure that you have node.js installed on your machine. 
 
-
 # 1. Setup
 * run `npm install` to install all dependencies needed that are listed inside the package.json file.
 * this API  is by default connected to a mySQL database deployed on Heroku, if you wish to try this API using your own datababase please check item 1.1, if not, please ignore it.
